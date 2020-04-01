@@ -5,17 +5,22 @@ import csv
 # define the input file
 infile = "shaver_etal.csv"
 
-# open and parse shaver et al.
-with open(infile, 'r') as shaver:
+
+#open the output file
+with open("shaver_tabbed.txt", 'w') as output:
+
+	# open and parse shaver et al.
+	with open(infile, 'r') as shaver:
+		
+		# create a csv reader object
+		reader = csv.reader(shaver, delimiter=",")
+
+		for line in reader:
+			# skip blank lines
+			if not line:
+				continue
+
+			else:
+				linewriter = csv.writer(output, delimiter='\t', quotechar='"')
+				linewriter.writerow(line)
 	
-	# create a csv reader object
-	reader = csv.reader(shaver, delimiter=",")
-
-	for line in reader:
-		# skip blank lines
-		if not line:
-			continue
-
-		else:
-			if(line[3] == 'Stepps'):
-				print('\t'.join([line[3], line[7], line[8]]))

@@ -1,15 +1,21 @@
 # /usr/bin/env python3
 
+import csv
+
 # define the input file
 infile = "shaver_etal.csv"
 
 # open and parse shaver et al.
 with open(infile, 'r') as shaver:
-	for line in shaver:
-		line = line.rstrip("\n")
+	
+	# create a csv reader object
+	reader = csv.reader(shaver, delimiter=",")
 
-		fields = line.split(",")
+	for line in reader:
+		# skip blank lines
+		if not line:
+			continue
 
-		if(fields[3] == 'Stepps'):
-			# print(fields[3], fields[7], fields[8])
-			print('\t'.join([fields[3], fields[7], fields[8]]))
+		else:
+			if(line[3] == 'Stepps'):
+				print('\t'.join([line[3], line[7], line[8]]))

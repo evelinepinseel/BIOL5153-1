@@ -1,26 +1,27 @@
 #! /usr/bin/env python3
 
+import argparse
 import csv
 from Bio import SeqIO
 
-# specify the input files
-gff_file   = 'watermelon.gff'
-fasta_file = 'watermelon.fsa'
+# create an argument parser object
+parser = argparse.ArgumentParser(description = "This script parses a GFF file and does stuff with it")
 
+# add positional arguments
+parser.add_argument("gff",   help="name of the GFF file")
+parser.add_argument("fasta", help="name of the FASTA file")
+
+# parse the arguments
+args = parser.parse_args()
 
 # read and parse the FASTA file
-genome = SeqIO.read(fasta_file, 'fasta')
-
-# print(dir(genome))
-print(genome.description)
-print(len(genome.seq))
-print(genome.seq)
+genome = SeqIO.read(args.fasta, 'fasta')
 
 # read GFF file, line by line
-with open(gff_file, 'r') as gff:
+with open(args.gff, 'r') as gff_file:
 	
 	# create a csv reader object
-	reader = csv.reader(gff, delimiter="\t")
+	reader = csv.reader(gff_file, delimiter="\t")
 
 	for line in reader:
 		# skip blank lines
@@ -31,11 +32,13 @@ with open(gff_file, 'r') as gff:
 			start = line[3]
 			end   = line[4]
 
+			print(start, end)
+
 			# test whether this is a CDS feature
 
 			# if it is a CDS feature, then extract the substring/sequence
 
-			# print that sequence to STDOUT
+			# calculate and print the GC content for that substring (2 decimal places)
 
 
 # list for gene names
@@ -77,8 +80,7 @@ gene_names = []
 # 	print(gene)
 
 
-
-gff.close()
+# args.gff.close()
 
 
 

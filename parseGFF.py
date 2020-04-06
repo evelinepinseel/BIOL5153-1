@@ -1,14 +1,20 @@
 #! /usr/bin/env python3
 
 import csv
+from Bio import SeqIO
 
 # specify the input files
 gff_file   = 'watermelon.gff'
 fasta_file = 'watermelon.fsa'
 
 
-# list for gene names
-gene_names = []
+# read and parse the FASTA file
+genome = SeqIO.read(fasta_file, 'fasta')
+
+# print(dir(genome))
+print(genome.description)
+print(len(genome.seq))
+print(genome.seq)
 
 # read GFF file, line by line
 with open(gff_file, 'r') as gff:
@@ -22,7 +28,19 @@ with open(gff_file, 'r') as gff:
 			continue
 
 		else:
-			print(line[3], line[4])
+			start = line[3]
+			end   = line[4]
+
+			# test whether this is a CDS feature
+
+			# if it is a CDS feature, then extract the substring/sequence
+
+			# print that sequence to STDOUT
+
+
+# list for gene names
+gene_names = []
+
 
 # for line in gff:
 

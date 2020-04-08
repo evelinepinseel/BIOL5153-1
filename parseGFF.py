@@ -4,88 +4,76 @@ import argparse
 import csv
 from Bio import SeqIO
 
-# create an argument parser object
-parser = argparse.ArgumentParser(description = "This script parses a GFF file and does stuff with it")
 
-# add positional arguments
-parser.add_argument("gff",   help="name of the GFF file")
-parser.add_argument("fasta", help="name of the FASTA file")
+def get_args():
+	# create an argument parser object
+	parser = argparse.ArgumentParser(description = "This script parses a GFF file and does stuff with it")
 
-# parse the arguments
-args = parser.parse_args()
+	# add positional arguments
+	parser.add_argument("gff",   help="name of the GFF file")
+	parser.add_argument("fasta", help="name of the FASTA file")
 
-# read and parse the FASTA file
-genome = SeqIO.read(args.fasta, 'fasta')
-
-# read GFF file, line by line
-with open(args.gff, 'r') as gff_file:
-	
-	# create a csv reader object
-	reader = csv.reader(gff_file, delimiter="\t")
-
-	for line in reader:
-		# skip blank lines
-		if not line:
-			continue
-
-		else:
-			start = line[3]
-			end   = line[4]
-
-			print(start, end)
-
-			# test whether this is a CDS feature
-
-			# if it is a CDS feature, then extract the substring/sequence
-
-			# calculate and print the GC content for that substring (2 decimal places)
+	# parse the arguments
+	return parser.parse_args()
 
 
-# list for gene names
-gene_names = []
+def parse_fasta():
+	# read and parse the FASTA file
+	return SeqIO.read(args.fasta, 'fasta')
 
 
-# for line in gff:
+def parse_gff(genome):
+	# read GFF file, line by line
+	with open(args.gff, 'r') as gff_file:
+		
+		# create a csv reader object
+		reader = csv.reader(gff_file, delimiter="\t")
 
-# 	# remove line breaks
-# 	line = line.rstrip('\n')
-	
-# 	# split each line on the tab character
-# 	# sequence, source, feature, begin, end, length, strand, phase, attributes = line.split('\t')
-# 	fields = line.split('\t')
+		for line in reader:
+			# skip blank lines
+			if not line:
+				continue
 
-# 	# split the attributes field (index = 8), each attribute is separated by ' ; '
+			else:
+				feature_type = line[2]
+				start        = int(line[3])
+				end          = int(line[4])
+				strand       = line[6]
+				attributes   = line[8]
 
-# 	attributes = fields[8].split(' ; ')
+				# test whether this is a CDS feature
+				# if it is a CDS feature, then extract the substring/sequence
+				if feature_type == 'CDS':
+					# extract this feature from the genome
+					feature_seq = genome[start-1:end]
 
-# 	# we only need the first item in this list
-# 	# print(attributes[0])
-# 	gene_fields = attributes[0].split('Gene ')
-
-# 	# print the gene name
-# 	# print(gene_fields[1])
-
-# 	# store the gene name
-# 	gene_names.append(gene_fields[1])
-
-
-	# extract the DNA sequence from the genome for this feature
-
-	# print the DNA sequence for this feature
-
-	# calculate the GC content for this feature, and print it to the screen
-
-# print the genes in alphabetical order
-# for gene in sorted(gene_names):
-# 	print(gene)
+					print(attributes)
+					print(feature_seq)
+					feature_GC = gc(feature_seq)
+					GCround = round(feature_GC, 2)
+					print (GCround)
+					print ("{0:.2f}".format (feature_GC))
 
 
-# args.gff.close()
+def gc(sequence):
+	# calculate and print the GC content for that substring (2 decimal places)
+	count_of_G = sequence.count('G')
+	count_of_C = sequence.count('C')
+
+	return(count_of_G + count_of_C)/len(sequence)
 
 
+def main():
+	genome_sequence = parse_fasta()
+	parse_gff(genome_sequence.seq)
 
 
+# get the command-line arguments before calling main()
+args = get_args()
 
+# execute the program by calling main
+if __name__ == "__main__":
+	main()
 
 
 

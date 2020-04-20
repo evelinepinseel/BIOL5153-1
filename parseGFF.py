@@ -2,6 +2,7 @@
 
 import argparse
 import csv
+import re
 from Bio import SeqIO
 
 
@@ -35,6 +36,7 @@ def parse_gff(genome):
 				continue
 
 			else:
+				organism     = line[0].replace(" ", "_")
 				feature_type = line[2]
 				start        = int(line[3])
 				end          = int(line[4])
@@ -47,12 +49,20 @@ def parse_gff(genome):
 					# extract this feature from the genome
 					feature_seq = genome[start-1:end]
 
-					print(attributes)
+					# extract the gene name
+					match = re.search("Gene\s+(\S+)\s+", attributes)
+					gene_name = match.group(1)
+
+					# print FASTA format
+					print(">" + organism + "_" + gene_name)
 					print(feature_seq)
-					feature_GC = gc(feature_seq)
-					GCround = round(feature_GC, 2)
-					print (GCround)
-					print ("{0:.2f}".format (feature_GC))
+
+					# print(attributes)
+					# print(feature_seq)
+					# feature_GC = gc(feature_seq)
+					# GCround = round(feature_GC, 2)
+					# print (GCround)
+					# print ("{0:.2f}".format (feature_GC))
 
 
 def gc(sequence):
@@ -74,9 +84,6 @@ args = get_args()
 # execute the program by calling main
 if __name__ == "__main__":
 	main()
-
-
-
 
 
 
